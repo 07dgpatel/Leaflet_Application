@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Leaflet</title>
+  <!-- Leaflet's CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+  <!-- Leaflet's JS -->
+  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+    integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+    crossorigin="">
+  </script>
+  <!-- Leaflet-Provider JS  -->
+  <script src="leaflet-providers.js"></script>
+  <!-- leaflet-search JS CSS  -->
+  <link rel="stylesheet" href="leaflet-search-master/dist/leaflet-search.min.css"/>
+  <script src="leaflet-search-master/dist/leaflet-search.src.js"></script>
+  
+  <!-- leaflet-defaultextent js CSS   -->
+  <link rel="stylesheet" href="Leaflet.defaultextent-master/dist/leaflet.defaultextent.css"/>
+  <script src="Leaflet.defaultextent-master/dist/leaflet.defaultextent.js"></script>
+  
+  <link rel="stylesheet" href="leaflet-groupedlayercontrol-gh-pages/dist/leaflet.groupedlayercontrol.min.css"/>
+  <script src="leaflet-groupedlayercontrol-gh-pages/dist/leaflet.groupedlayercontrol.min.js"></script>
+  
+
+
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    height: 100%
+  }
+
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+  }
+</style>
+
+<body>
+  <div id="map"></div>
+  <script>
+    const streets_map = L.map('map').setView([17.30, 79.24], 13);
+    // Add scale line code
+    L.control.scale({
+      imperial: false
+    }).addTo(streets_map);
+
+    // ZoomtoExtent code
+
+    L.control.defaultExtent().setCenter([17.30, 79.24]).setZoom(13).addTo(streets_map);
+
+    // basmap from mapbox
+    // L.tileLayer(
+    // 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
+    //   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    //   maxZoom: 18,
+    //   id: 'mapbox.streets',
+    //   accessToken: 'pk.eyJ1IjoiZGdwYXRlbDAxIiwiYSI6ImNrMWtpM3N6YzB5YjAzY3BnY2thbHVldWgifQ.-V37AdCaq8O0jCWgCPS4nw'
+    // }).addTo(streets_map);
+    
+    // L.tileLayer(
+    //     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {
+    //       foo: 'bar',
+    //       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+    //     })
+    //   .addTo(streets_map);
+    
+    // add wms Layer
+    var webgis = L.tileLayer.wms('https://wms.qgiscloud.com/07dgpatel/Akke/wms', {
+      layers: 'Akkene_Palle',
+      format: 'image/png',
+      transparent: true
+    }).addTo(streets_map);
+
+    // Base Layer
+
+var baseLayers = {
+  'OpenStreetMap':L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(streets_map), 
+  'Esri NatGeoWorldMap': L.tileLayer.provider('Esri.NatGeoWorldMap'), 
+  'Esri WorldTopoMap': L.tileLayer.provider('Esri.WorldTopoMap'),
+  'Esri WorldStreetMap': L.tileLayer.provider('Esri.WorldStreetMap'),
+  'Esri WorldImagery': L.tileLayer.provider('Esri.WorldImagery'),
+  'Esri WorldTerrain': L.tileLayer.provider('Esri.WorldTerrain'),
+  'Esri WorldShadedRelief': L.tileLayer.provider('Esri.WorldShadedRelief'),
+  'Esri OceanBasemap': L.tileLayer.provider('Esri.OceanBasemap'),
+  'Esri WorldGrayCanvas': L.tileLayer.provider('Esri.WorldGrayCanvas'),
+  'Thunderforest Landscape': L.tileLayer.provider('Thunderforest.Landscape'),       
+  'Stamen Watercolor': L.tileLayer.provider('Stamen.Watercolor'),
+};
+var overlays = {
+"Layer":{
+  "parcel :akkene_palle":webgis} 
+      };
+// var options = {
+//   exclusiveGroups: ["baselayer"],
+//   // groupCheckboxes: true
+// };
+L.control.groupedLayers(baseLayers,overlays).addTo(streets_map);
+
+
+    
+  </script>
+</body>
+
+</html>
