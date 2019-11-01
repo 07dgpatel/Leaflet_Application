@@ -24,12 +24,16 @@
   <!-- leaflet-defaultextent js CSS   -->
   <link rel="stylesheet" href="Leaflet.defaultextent-master/dist/leaflet.defaultextent.css" />
   <script src="Leaflet.defaultextent-master/dist/leaflet.defaultextent.js"></script>
-
+  <!-- Grouped layer control -->
   <link rel="stylesheet" href="leaflet-groupedlayercontrol-gh-pages/dist/leaflet.groupedlayercontrol.min.css" />
   <script src="leaflet-groupedlayercontrol-gh-pages/dist/leaflet.groupedlayercontrol.min.js"></script>
-
-
-
+  <!-- fullscreen -->
+  <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+  <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'
+    rel='stylesheet' />
+  <!-- ZoomSlider -->
+  <script src='Leaflet.zoomslider-master/L.Control.Zoomslider.js'></script>
+  <link rel='stylesheet' href='Leaflet.zoomslider-master/L.Control.Zoomslider.css' />
 </head>
 <style>
   * {
@@ -53,8 +57,11 @@
     position: absolute;
     z-index: 0;
   }
-/* description style */
+
+  /* description style */
   .info {
+    position: fixed !important;
+    right: 46%;
     padding: 6px 8px;
     font: 14px/16px Arial, Helvetica, sans-serif;
     background: white;
@@ -67,8 +74,13 @@
     margin: 0 0 5px;
     color: #777;
   }
+
   /* choropleth map legend */
   .legend {
+    position: fixed !important;
+    right: 0 !important;
+    right: 0;
+    bottom: 0.8em;
     line-height: 18px;
     color: #555;
   }
@@ -80,6 +92,66 @@
     margin-right: 8px;
     opacity: 0.7;
   }
+
+  /* dafault extent */
+  .leaflet-control-defaultextent {
+    position: absolute;
+    top: 5.5em;
+  }
+
+  /* fullscreen */
+  .leaflet-control-fullscreen {
+    position: fixed !important;
+    right: 0.8em !important;
+
+  }
+
+  /* Layer controler */
+  .leaflet-control-layers {
+
+    top: 3em !important;
+
+  }
+
+  .leaflet-control-layers-toggle {
+    position: relative !important;
+    width: 30px !important;
+    height: 30px !important;
+    inline-size: 30px !important;
+  }
+
+  /* Zoomslider*/
+  .leaflet-control-zoomslider {
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    width: 30px;
+    height: 16.2em;
+
+    background: transparent !important;
+    top: 2.2em;
+  }
+
+  .leaflet-control-zoomslider-body {
+    border: rgba(255, 255, 255, .4);
+    background: transparent;
+  }
+
+  .leaflet-control-zoomslider-knob {
+    margin-left: -0.9em !important;
+    width: 2em !important;
+    height: 2.5em !important;
+
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+  }
+
+  .leaflet-control-zoomslider-wrap {
+    background: rgba(255, 255, 255, .4);
+    height: 15.35em;
+  }
+
+  .leaflet-control-zoomslider a {
+    display: none;
+  }
 </style>
 
 <body>
@@ -87,14 +159,17 @@
 
   <script type="text/javascript" src="India_ac.js"></script>
   <script>
-    const streets_map = L.map('map').setView([17.30, 79.24], 13);
+    const streets_map = L.map('map', {}).setView([17.30, 79.24], 13);
     // Add scale line code
     L.control.scale({
       imperial: false
     }).addTo(streets_map);
-
+    // Fullscreen code
+    streets_map.addControl(new L.Control.Fullscreen());
     // ZoomtoExtent code
-
+    streets_map.addControl(new L.Control.Zoomslider({
+      zoomControl: false
+    }));
     L.control.defaultExtent().setCenter([17.30, 79.24]).setZoom(13).addTo(streets_map);
 
     // basmap from mapbox
@@ -156,18 +231,18 @@
 
     // control that shows state info on hover
     var info = L.control();
-// Discription div create
+    // Discription div create
     info.onAdd = function (streets_map) {
       this._div = L.DomUtil.create('div', 'info');
       this.update();
       return this._div;
     };
-// Discription update
+    // Discription update
     info.update = function (props) {
       this._div.innerHTML = '<h4>Discription</h4>' + (props ? '<b>' + props.vill_name + '</b><br/>' + props
         .survey_no + '' : 'Hover over a state');
     };
-   
+
 
     info.addTo(streets_map);
 
@@ -212,16 +287,16 @@
       }
       info.update(layer.feature.properties);
     }
- // reset HighlightFeature
+    // reset HighlightFeature
     function resetHighlight(e) {
       geo.resetStyle(e.target);
       info.update();
     }
-// on select to zoom feature
+    // on select to zoom feature
     function zoomToFeature(e) {
       streets_map.fitBounds(e.target.getBounds());
     }
-// on each feature event
+    // on each feature event
     function onEachFeature(feature, layer) {
       layer.on({
         mouseover: highlightFeature,
