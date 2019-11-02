@@ -34,6 +34,9 @@
   <!-- ZoomSlider -->
   <script src='Leaflet.zoomslider-master/L.Control.Zoomslider.js'></script>
   <link rel='stylesheet' href='Leaflet.zoomslider-master/L.Control.Zoomslider.css' />
+  <!-- mousePosition -->
+  <script src="Leaflet.MousePosition-master/L.Control.MousePosition.js"></script>
+  <link rel="stylesheet" href="Leaflet.MousePosition-master/L.Control.MousePosition.css"/>
 </head>
 <style>
   * {
@@ -152,6 +155,13 @@
   .leaflet-control-zoomslider a {
     display: none;
   }
+
+  .leaflet-control-mouseposition{
+    position: absolute!important;
+    bottom: 30%!important;
+    left: 55em !important;
+    
+  }
 </style>
 
 <body>
@@ -170,8 +180,14 @@
     streets_map.addControl(new L.Control.Zoomslider({
       zoomControl: false
     }));
+     // layertoExtent code
     L.control.defaultExtent().setCenter([17.30, 79.24]).setZoom(13).addTo(streets_map);
-
+    // mousePosition code
+    L.control.mousePosition({
+      numDigits:4,
+      separator:',',
+      lngFirst:true,
+      prefix:"Longitude,Latitude"}).addTo(streets_map);
     // basmap from mapbox
     // L.tileLayer(
     // 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
@@ -228,7 +244,7 @@
     // };
 
     L.control.groupedLayers(baseLayers, overlays).addTo(streets_map);
-
+    
     // control that shows state info on hover
     var info = L.control();
     // Discription div create
